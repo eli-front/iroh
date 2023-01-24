@@ -164,9 +164,10 @@ fn get_device_info(mac: MacAddr) -> String {
     mac.truncate(8);
 
     // get file mac-vendors-export.csv and find row where mac prefix matches
-    let mut reader =
-        csv::Reader::from_path("src/mac-vendors-export.csv").expect("Could not open file");
 
+    let bytes = include_bytes!("../static/mac-vendors-export.csv");
+
+    let mut reader = csv::Reader::from_reader(bytes.as_ref());
     for result in reader.records() {
         let record = result.expect("Could not read record");
 
@@ -176,7 +177,7 @@ fn get_device_info(mac: MacAddr) -> String {
         }
     }
 
-    return format!("Unknown device: {}", mac);
+    return format!("Unknown device id: {}", mac);
 }
 
 async fn scan_devices() {
